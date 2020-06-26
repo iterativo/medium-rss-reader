@@ -1,9 +1,30 @@
 import express from 'express'
-import axios from 'axios'
-import xml from 'xml'
 import path from 'path'
+import Parser from 'rss-parser'
+
+const parser = new Parser()
 
 const app = express()
+
+class History {
+    history = []
+    maxSize = 5
+
+    push(item) {
+        if (this.history.includes(item)) {
+            this.history.sort((x, y) => x === item ? -1 : y === item ? 1 : 0)
+        } else {
+            this.history.unshift(item)
+            this.history = this.history.slice(0, this.maxSize)
+        }
+    }
+
+    get recent() {
+        return this.history
+    }
+}
+
+const history = new History()
 
 app.use(express.static(path.join(__dirname, 'build')))
 
@@ -13,9 +34,17 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'build', 'index.htm
 
 app.get('/feeds/:name', async (req, res) => {
     const { name } = req.params
-    const response = await axios.get(`https://medium.com/feed/${name}`)
-    res.set('Content-Type', 'text/xml')
-    res.send(xml(response.data))
+    try {
+        const feed = await parser.parseURL(`https://medium.com/feed/${ name }`)
+        history.push(name)
+        return res.status(200).json({ feed, history: history.recent })
+    } catch (e) {
+        return res.sendStatus(500)
+    }
+})
+
+app.get('/history', async (req, res) => {
+    res.status(200).json(history.recent)
 })
 
 app.listen(

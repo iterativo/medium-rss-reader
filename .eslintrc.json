@@ -1,6 +1,10 @@
 {
     "extends": "react-app",
     "rules": {
-        "semi": ["warn", "never"]
+        "comma-dangle": ["warn", {"functions": "never", "objects": "always-multiline"}],
+        "semi": ["warn", "never"],
+        "object-curly-spacing": ["warn", "always"],
+        "quotes": ["warn", "single"],
+        "react/jsx-curly-spacing": ["warn", "always"]
     }
 }
