@@ -5,7 +5,6 @@ import React from 'react'
 import Feed from './Feed'
 import Search from './Search'
 import SearchError from './SearchError'
-import SearchHistory from './SearchHistory'
 import theme from './theme'
 
 const backendBaseUrl = 'http://localhost:3001'
@@ -25,7 +24,6 @@ const toViewModel = (feed) => ({
 })
 
 const App = () => {
-    const [value, setValue] = React.useState('')
     const [feed, setFeed] = React.useState(null)
     const [history, setHistory] = React.useState([])
     const [hasFailed, setHasFailed] = React.useState(false)
@@ -44,31 +42,20 @@ const App = () => {
             }
             setFeed(toViewModel(resp.data.feed))
             setHistory(resp.data.history)
-            setValue('')
         } catch (e) {
             setHasFailed(true)
         }
     }
 
-    const search = e => {
-        e.preventDefault()
-        fetch(value)
-    }
-
     return (
         <MuiThemeProvider theme={ theme }>
             <Search
-                onSubmit={ search }
-                onChange={ (e) => setValue(e.target.value) }
-                value={ value }
+                onSubmit={ (feedName) => fetch(feedName) }
+                history={ history }
             />
             {
                 hasFailed &&
                 <SearchError />
-            }
-            {
-                !!history &&
-                <SearchHistory history={ history } onItemClick={ fetch } />
             }
             {
                 feed &&

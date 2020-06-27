@@ -1,4 +1,5 @@
 import { withStyles } from '@material-ui/core'
+import Box from '@material-ui/core/Box'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Divider from '@material-ui/core/Divider'
@@ -7,16 +8,15 @@ import Typography from '@material-ui/core/Typography'
 import * as PropTypes from 'prop-types'
 import React from 'react'
 
-const styles = theme => ({
-    feed: {
+const styles = {
+    root: {
         background: '#ffffff',
         color: '#000000',
         flexGrow: 1,
+        paddingTop: 20,
     },
     feedCard: {
-        padding: theme.spacing(2),
         minWidth: 275,
-        marginTop: 10,
         marginLeft: 250,
         marginRight: 250,
     },
@@ -26,13 +26,11 @@ const styles = theme => ({
     feedItems: {
         marginTop: 10,
     },
-})
+}
 
 const Feed = props =>
-    <Grid
-        container
-        spacing={ 3 }
-        className={ props.classes.feed }
+    <Box
+        className={ props.classes.root }
     >
         <Grid item xs={ 12 }>
             <Card className={ props.classes.feedCard } variant={ 'outlined' }>
@@ -63,11 +61,16 @@ const Feed = props =>
                 </CardContent>
             </Card>
         </Grid>
-    </Grid>
+    </Box>
 
 Feed.propTypes = {
-    classes: PropTypes.any,
-    feed: PropTypes.any,
+    classes: PropTypes.object,
+    feed: PropTypes.shape({
+        title: PropTypes.string,
+        description: PropTypes.string,
+        link: PropTypes.string,
+        items: PropTypes.array,
+    }),
 }
 
-export default withStyles(styles, { withTheme: true })(Feed)
+export default withStyles(styles)(Feed)

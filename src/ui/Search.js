@@ -2,34 +2,22 @@ import { withStyles } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
-import InputBase from '@material-ui/core/InputBase'
 import { fade } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import SearchIcon from '@material-ui/icons/Search'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 import * as PropTypes from 'prop-types'
 import React from 'react'
 
 const styles = theme => ({
-    appBar: {
+    root: {
         color: theme.palette.primary,
     },
     toolbar: {
         display: 'flex',
         justifyContent: 'center',
-    },
-    inputRoot: {
-        color: 'inherit',
-    },
-    inputInput: {
-        padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
-        paddingLeft: `calc(1em + ${ theme.spacing(4) }px)`,
-        transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '20ch',
-        },
     },
     search: {
         position: 'relative',
@@ -46,6 +34,9 @@ const styles = theme => ({
             width: 'auto',
         },
     },
+    searchForm: {
+        display: 'flex',
+    },
     searchIcon: {
         padding: theme.spacing(0, 2),
         height: '100%',
@@ -55,53 +46,83 @@ const styles = theme => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    searchInput: {
+        color: 'inherit',
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${ theme.spacing(4) }px)`,
+    },
     submitButton: {
-        marginLeft: theme.spacing(10),
+        padding: theme.spacing(0, 3, 0, 3),
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
     },
 })
 
-const Search = props =>
-    <AppBar className={ props.classes.appBar } position={ 'static' }>
-        <Toolbar className={ props.classes.toolbar }>
-            <Typography display={ 'inline' }>Search Medium Feed:</Typography>
-            <div className={ props.classes.search }>
-                <IconButton className={ props.classes.searchIcon }>
-                    <SearchIcon />
-                </IconButton>
-                <form onSubmit={ props.onSubmit }>
-                    <span>
-                        <InputBase
-                            placeholder={ 'Search…' }
-                            classes={ {
-                                root: props.classes.inputRoot,
-                                input: props.classes.inputInput,
-                            } }
-                            onChange={ props.onChange }
-                            inputProps={ { 'aria-label': 'search' } }
-                            value={ props.value }
+const Search = props => {
+    const [feedName, setFeedName] = React.useState('')
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        feedName && props.onSubmit(feedName)
+    }
+    return (
+        <AppBar className={ props.classes.root } position={ 'static' }>
+            <Toolbar className={ props.classes.toolbar }>
+                <Typography display={ 'inline' }>Medium RSS Reader</Typography>
+                <div className={ props.classes.search }>
+                    <IconButton className={ props.classes.searchIcon }>
+                        <SearchIcon />
+                    </IconButton>
+                    <form
+                        className={ props.classes.searchForm }
+                        onSubmit={ handleSubmit }
+                        noValidate
+                        autoComplete={ 'off' }
+                    >
+                        <Autocomplete
+                            options={ props.history }
+                            freeSolo
+                            disableClearable
+                            fullWidth
+                            onChange={ (e, v) => setFeedName(v) }
+                            renderInput={ (params) => (
+                                <TextField
+                                    { ...params }
+                                    onChange={ (e) => setFeedName(e.target.value) }
+                                    placeholder={ 'Search Medium RSS feed ...' }
+                                    fullWidth
+                                    value={ feedName }
+                                    InputProps={ {
+                                        ...params.InputProps,
+                                        disableUnderline: true,
+                                        type: 'search',
+                                        className: props.classes.searchInput,
+                                        style: {
+                                            width: '400px',
+                                        },
+                                    } }
+                                />
+                            ) }
                         />
-                    </span>
-                    <span>
                         <Button
                             className={ props.classes.submitButton }
                             variant={ 'contained' }
-                            onClick={ props.onSubmit }
+                            onClick={ handleSubmit }
                         >
                             Submit
                         </Button>
-                    </span>
-                </form>
-            </div>
-        </Toolbar>
-    </AppBar>
+                    </form>
+                </div>
+            </Toolbar>
+        </AppBar>
+    )
+}
 
 Search.propTypes = {
-    classes: PropTypes.any,
+    classes: PropTypes.object,
     onSubmit: PropTypes.func,
     onChange: PropTypes.func,
-    value: PropTypes.string,
+    history: PropTypes.arrayOf(PropTypes.string),
 }
 
 export default withStyles(styles, { withTheme: true })(Search)
