@@ -1,7 +1,7 @@
 {
     "extends": "react-app",
     "rules": {
-        "comma-dangle": ["warn", {"functions": "never", "objects": "always-multiline"}],
+        "comma-dangle": ["warn", {"functions": "never", "objects": "always-multiline", "arrays":  "always-multiline"}],
         "semi": ["warn", "never"],
         "object-curly-spacing": ["warn", "always"],
         "quotes": ["warn", "single"],

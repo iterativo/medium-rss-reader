@@ -1,34 +1,15 @@
 import express from 'express'
 import path from 'path'
 import Parser from 'rss-parser'
+import { History } from './store'
 
 const parser = new Parser()
 
 const app = express()
 
-class History {
-    history = []
-    maxSize = 5
-
-    push(item) {
-        if (this.history.includes(item)) {
-            this.history.sort((x, y) => x === item ? -1 : y === item ? 1 : 0)
-        } else {
-            this.history.unshift(item)
-            this.history = this.history.slice(0, this.maxSize)
-        }
-    }
-
-    get recent() {
-        return this.history
-    }
-}
-
 const history = new History()
 
-app.use(express.static(path.join(__dirname, 'build')))
-
-app.get('/health', (req, res) => res.sendStatus(200))
+app.use(express.static(path.join(__dirname, '..', '..', 'build')))
 
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'build', 'index.html')))
 
