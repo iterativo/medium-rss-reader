@@ -7,8 +7,6 @@ import Search from './Search'
 import SearchError from './SearchError'
 import theme from './theme'
 
-const backendBaseUrl = 'http://localhost:3001'
-
 const toViewModel = (feed) => ({
     title: feed.title,
     description: feed.description,
@@ -29,13 +27,13 @@ const App = () => {
     const [hasFailed, setHasFailed] = React.useState(false)
 
     React.useEffect(() => {
-        axios.get(`${ backendBaseUrl }/history`).then(({ data }) => setHistory(data))
+        axios.get('/history').then(({ data }) => setHistory(data))
     }, [])
 
     const fetch = async(value) => {
         try {
             setHasFailed(false)
-            const resp = await axios.get(`${ backendBaseUrl }/feeds/${ value }`)
+            const resp = await axios.get(`/feeds/${ value }`)
             if (resp.status !== 200) {
                 setHasFailed(true)
                 return

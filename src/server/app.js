@@ -28,7 +28,8 @@ app.get('/history', async (req, res) => {
     res.status(200).json(history.recent)
 })
 
+const port = process.env.PORT || 8080
 app.listen(
-    process.env.PORT || 8080,
-    () => console.log('Server listening on http://localhost:8080')
+    port,
+    () => console.log(`Server listening on http://localhost:${ port }`)
 )
