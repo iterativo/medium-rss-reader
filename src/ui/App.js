@@ -1,25 +1,10 @@
 import { MuiThemeProvider } from '@material-ui/core'
 import axios from 'axios'
-import _ from 'lodash'
 import React from 'react'
 import Feed from './Feed'
 import Search from './Search'
 import SearchError from './SearchError'
 import theme from './theme'
-
-const toViewModel = (feed) => ({
-    title: feed.title,
-    description: feed.description,
-    link: feed.link,
-    items: feed.items.map(x => _.pick(x, [
-        'creator',
-        'title',
-        'content',
-        'creator',
-        'pubDate',
-        'link',
-    ])),
-})
 
 const App = () => {
     const [feed, setFeed] = React.useState(null)
@@ -38,7 +23,7 @@ const App = () => {
                 setHasFailed(true)
                 return
             }
-            setFeed(toViewModel(resp.data.feed))
+            setFeed(resp.data.feed)
             setHistory(resp.data.history)
         } catch (e) {
             setHasFailed(true)
