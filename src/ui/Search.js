@@ -65,9 +65,9 @@ const Search = props => {
         e.preventDefault()
         feedName && props.onSubmit(feedName)
     }
-    const handleAutocompleteSelection = (e, feedName) => {
-        e.preventDefault()
-        props.onSubmit(feedName)
+    const handleAutocompleteSelection = (event, name) => {
+        props.onSubmit(name)
+        setFeedName(name)
     }
     return (
         <AppBar className={ props.classes.root } position={ 'static' }>
@@ -89,6 +89,7 @@ const Search = props => {
                             disableClearable
                             fullWidth
                             onChange={ handleAutocompleteSelection }
+                            value={ feedName }
                             renderInput={ (params) => (
                                 <TextField
                                     { ...params }

@@ -30,7 +30,7 @@ const App = () => {
         axios.get('/history').then(({ data }) => setHistory(data))
     }, [])
 
-    const fetch = async(value) => {
+    const fetchFeed = async(value) => {
         try {
             setHasFailed(false)
             const resp = await axios.get(`/feeds/${ value }`)
@@ -48,7 +48,7 @@ const App = () => {
     return (
         <MuiThemeProvider theme={ theme }>
             <Search
-                onSubmit={ (feedName) => fetch(feedName) }
+                onSubmit={ (feedName) => fetchFeed(feedName) }
                 history={ history }
             />
             {
